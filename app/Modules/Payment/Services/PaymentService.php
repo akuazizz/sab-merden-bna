@@ -8,6 +8,7 @@ use App\Modules\Payment\Exceptions\PaymentAlreadyProcessedException;
 use App\Modules\Payment\Models\PaymentLog;
 use App\Modules\Payment\Models\Transaksi;
 use App\Modules\Payment\Repositories\TransaksiRepository;
+use App\Modules\Shared\Contracts\EventPublisherInterface;
 use App\Modules\Shared\Models\EventLog;
 use App\Modules\Shared\Repositories\PengaturanRepository;
 use App\Modules\Tagihan\Enums\TagihanStatus;
@@ -27,6 +28,7 @@ class PaymentService
         private readonly TransaksiRepository $transaksiRepo,
         private readonly TagihanService      $tagihanService,
         private readonly PengaturanRepository $pengaturan,
+        private readonly EventPublisherInterface $publisher,
     ) {}
 
     // ── Initiate Payment ─────────────────────────────────────────────
@@ -165,6 +167,18 @@ class PaymentService
 
             // ── Mark payment_log sebagai processed ───────────────────
             $this->markLogProcessed($paymentLogId);
+
+            // ── Publish ke RabbitMQ (AMQP) ───────────────────────────
+            $this->publisher->publish(
+                exchange:   config('rabbitmq.exchanges.payment', 'sab.payment'),
+                routingKey: config('rabbitmq.routing_keys.PaymentCallback', 'payment.callback'),
+                payload:    [
+                    'kode_transaksi' => $kodeTransaksi,
+                    'tx_status'      => $txStatus,
+                    'status_baru'    => $statusBaru->value,
+                    'fraud_status'   => $fraudStatus,
+                ],
+            );
 
             // ── Catat ke event_logs ───────────────────────────────────
             EventLog::catat(

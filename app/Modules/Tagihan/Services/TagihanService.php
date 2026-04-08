@@ -3,6 +3,7 @@
 namespace App\Modules\Tagihan\Services;
 
 use App\Modules\Meteran\Models\MeteranReading;
+use App\Modules\Shared\Contracts\EventPublisherInterface;
 use App\Modules\Shared\Models\EventLog;
 use App\Modules\Shared\Repositories\PengaturanRepository;
 use App\Modules\Tagihan\Enums\TagihanStatus;
@@ -21,9 +22,11 @@ use Illuminate\Support\Str;
 class TagihanService
 {
     public function __construct(
-        private readonly TagihanRepository   $tagihanRepo,
-        private readonly PengaturanRepository $pengaturan,
+        private readonly TagihanRepository       $tagihanRepo,
+        private readonly PengaturanRepository    $pengaturan,
+        private readonly EventPublisherInterface $publisher,
     ) {}
+
 
     // ── Generate Tagihan ─────────────────────────────────────────────
 
@@ -79,8 +82,20 @@ class TagihanService
             ]);
         });
 
-        // ── Dispatch event (setelah commit) ───────────────────────────
-        event(new TagihanDibuat($tagihan));
+        // ── Dispatch event ke Laravel Event System + RabbitMQ ──────────
+        $dibuat = new TagihanDibuat($tagihan);
+        event($dibuat);
+        $this->publisher->publish(
+            exchange:   config('rabbitmq.exchanges.events', 'sab.events'),
+            routingKey: config('rabbitmq.routing_keys.TagihanDibuat', 'tagihan.dibuat'),
+            payload:    $dibuat->toPayload(),
+        );
+        EventLog::catat(
+            eventName:     $dibuat->eventName(),
+            aggregateType: $dibuat->aggregateType(),
+            aggregateId:   $dibuat->aggregateId(),
+            payload:       $dibuat->toPayload(),
+        );
 
         return $tagihan;
     }
@@ -128,9 +143,21 @@ class TagihanService
 
             $tagihanUpdated = $this->tagihanRepo->update($tagihan->id, $update);
 
-            // ── Dispatch event untuk void ────────────────────────────
+            // ── Dispatch event untuk void + RabbitMQ ────────────────
             if ($statusBaru === TagihanStatus::Void) {
-                event(new TagihanDivoid($tagihanUpdated, $alasan));
+                $voidEv = new TagihanDivoid($tagihanUpdated, $alasan);
+                event($voidEv);
+                $this->publisher->publish(
+                    exchange:   config('rabbitmq.exchanges.events', 'sab.events'),
+                    routingKey: config('rabbitmq.routing_keys.TagihanDivoid', 'tagihan.divoid'),
+                    payload:    $voidEv->toPayload(),
+                );
+                EventLog::catat(
+                    eventName:     $voidEv->eventName(),
+                    aggregateType: $voidEv->aggregateType(),
+                    aggregateId:   $voidEv->aggregateId(),
+                    payload:       $voidEv->toPayload(),
+                );
             }
 
             // ── Catat di event_logs ───────────────────────────────────

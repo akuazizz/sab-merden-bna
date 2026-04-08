@@ -10,6 +10,7 @@ use App\Modules\Meteran\Repositories\MeteranRepository;
 use App\Modules\Pelanggan\Models\Pelanggan;
 use App\Modules\Pelanggan\Repositories\PelangganRepository;
 use App\Modules\Pelanggan\Services\PelangganService;
+use App\Modules\Shared\Contracts\EventPublisherInterface;
 use App\Modules\Shared\Models\EventLog;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -17,10 +18,12 @@ use Illuminate\Support\Facades\DB;
 class MeteranService
 {
     public function __construct(
-        private readonly MeteranRepository  $meteranRepo,
-        private readonly PelangganRepository $pelangganRepo,
-        private readonly PelangganService   $pelangganService,
+        private readonly MeteranRepository    $meteranRepo,
+        private readonly PelangganRepository  $pelangganRepo,
+        private readonly PelangganService     $pelangganService,
+        private readonly EventPublisherInterface $publisher,
     ) {}
+
 
     // ── Input Meteran ────────────────────────────────────────────────
 
@@ -78,9 +81,24 @@ class MeteranService
             ]);
         });
 
-        // ── Dispatch event (setelah transaction commit) ───────────────
-        // ShouldQueue → diproses async, tidak blocking response
-        event(new MeteranDibaca($reading));
+        // ── Dispatch ke Laravel Event System (GenerateTagihanListener) ──
+        $event = new MeteranDibaca($reading);
+        event($event);
+
+        // ── Publish ke RabbitMQ (AMQP) ───────────────────────────────
+        $this->publisher->publish(
+            exchange:   config('rabbitmq.exchanges.events', 'sab.events'),
+            routingKey: config('rabbitmq.routing_keys.MeteranDibaca', 'meteran.dibaca'),
+            payload:    $event->toPayload(),
+        );
+
+        // ── Catat di event_logs ───────────────────────────────────────
+        EventLog::catat(
+            eventName:     $event->eventName(),
+            aggregateType: $event->aggregateType(),
+            aggregateId:   $event->aggregateId(),
+            payload:       $event->toPayload(),
+        );
 
         return $reading;
     }

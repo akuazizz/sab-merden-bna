@@ -9,6 +9,8 @@ use App\Modules\Pelanggan\Exceptions\PelangganNonaktifException;
 use App\Modules\Pelanggan\Exceptions\PelangganNotFoundException;
 use App\Modules\Pelanggan\Models\Pelanggan;
 use App\Modules\Pelanggan\Repositories\PelangganRepository;
+use App\Modules\Shared\Contracts\EventPublisherInterface;
+use App\Modules\Shared\Models\EventLog;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
@@ -16,6 +18,7 @@ class PelangganService
 {
     public function __construct(
         private readonly PelangganRepository $repo,
+        private readonly EventPublisherInterface $publisher,
     ) {}
 
     // ── Create ───────────────────────────────────────────────────────
@@ -45,7 +48,21 @@ class PelangganService
 
             $pelanggan = $this->repo->create($data);
 
-            event(new WargaTerdaftar($pelanggan));
+            $event = new WargaTerdaftar($pelanggan);
+            event($event);
+
+            $this->publisher->publish(
+                exchange:   config('rabbitmq.exchanges.events', 'sab.events'),
+                routingKey: config('rabbitmq.routing_keys.WargaTerdaftar', 'pelanggan.terdaftar'),
+                payload:    $event->toPayload(),
+            );
+
+            EventLog::catat(
+                eventName:     $event->eventName(),
+                aggregateType: $event->aggregateType(),
+                aggregateId:   $event->aggregateId(),
+                payload:       $event->toPayload(),
+            );
 
             return $pelanggan;
         });

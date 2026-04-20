@@ -8,6 +8,10 @@ use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use Illuminate\Support\Facades\Log;
 
+// Fix: Konstanta socket tidak tersedia di Windows — define jika belum ada
+if (!defined('SOCKET_EAGAIN'))      { define('SOCKET_EAGAIN',      11); }
+if (!defined('SOCKET_EWOULDBLOCK')) { define('SOCKET_EWOULDBLOCK', 10035); }
+
 /**
  * Implementasi EventPublisher menggunakan RabbitMQ (AMQP).
  *
@@ -26,7 +30,8 @@ class RabbitMQPublisher implements EventPublisherInterface
 
     public function __construct()
     {
-        $this->connect();
+        // Lazy connect — koneksi dibuka saat pertama kali publish
+        // sehingga jika RabbitMQ tidak tersedia, sistem tetap berjalan
     }
 
     /**

@@ -7,6 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ $title ?? 'SAB Merden' }}</title>
+    <link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -21,14 +22,8 @@
         <header class="bg-white border-b border-slate-100 shadow-sm sticky top-0 z-10">
             <div class="w-full px-6 h-16 flex items-center justify-between">
 
-                <a href="{{ url('/') }}" class="flex items-center gap-2">
-                    <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 2C8 7 4 10.5 4 14a8 8 0 0016 0c0-3.5-4-7-8-12z" />
-                        </svg>
-                    </div>
-                    <span class="font-bold text-slate-800 text-sm">SAB Merden</span>
+                <a href="{{ url('/') }}" class="flex items-center">
+                    <x-app-logo size="sm" :dark="false" />
                 </a>
 
                 <nav class="flex items-center gap-6">
@@ -59,14 +54,8 @@
             <div class="w-full px-6 py-10 grid grid-cols-1 sm:grid-cols-3 gap-8">
 
                 <div>
-                    <div class="flex items-center gap-2 mb-3">
-                        <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
-                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 2C8 7 4 10.5 4 14a8 8 0 0016 0c0-3.5-4-7-8-12z" />
-                            </svg>
-                        </div>
-                        <span class="font-bold text-white">SAB Merden</span>
+                    <div class="mb-3">
+                        <x-app-logo size="sm" :dark="true" />
                     </div>
 
                     <p class="text-slate-400 text-sm">

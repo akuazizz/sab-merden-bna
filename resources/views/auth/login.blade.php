@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Login — SAB Merden</title>
+    <link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -23,18 +24,7 @@
 
         {{-- Top: Logo --}}
         <div class="relative z-10 px-12 pt-10">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center shadow-lg">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M12 2C8 7 4 10.5 4 14a8 8 0 0016 0c0-3.5-4-7-8-12z"/>
-                    </svg>
-                </div>
-                <div>
-                    <p class="text-white font-bold text-lg leading-tight">SAB Merden</p>
-                    <p class="text-blue-300 text-xs">Sistem Air Bersih</p>
-                </div>
-            </div>
+            <x-app-logo size="lg" :dark="true" label="Sistem Air Bersih" />
         </div>
 
         {{-- Center: Main content --}}
@@ -72,14 +62,8 @@
         <div class="w-full max-w-sm">
 
             {{-- Mobile logo (only shows on mobile) --}}
-            <div class="flex items-center gap-2 mb-8 lg:hidden">
-                <div class="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M12 2C8 7 4 10.5 4 14a8 8 0 0016 0c0-3.5-4-7-8-12z"/>
-                    </svg>
-                </div>
-                <span class="font-bold text-slate-800">SAB Merden</span>
+            <div class="mb-8 lg:hidden">
+                <x-app-logo size="md" :dark="false" />
             </div>
 
             <h1 class="text-2xl font-bold text-slate-800 mb-1">Selamat Datang Kembali</h1>

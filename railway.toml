@@ -1,0 +1,16 @@
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "php artisan migrate --force && php artisan storage:link && php-fpm & nginx -g 'daemon off;'"
+healthcheckPath = "/"
+healthcheckTimeout = 100
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10
+
+[[services]]
+name = "web"
+
+[[services]]
+name = "consumer"
+startCommand = "php artisan rabbitmq:consume --all"

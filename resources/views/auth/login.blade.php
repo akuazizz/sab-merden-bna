@@ -90,13 +90,8 @@
 
                 {{-- Password --}}
                 <div>
-                    <div class="flex items-center justify-between mb-1.5">
+                    <div class="mb-1.5">
                         <label for="password" class="form-label mb-0">Password</label>
-                        @if (Route::has('password.request'))
-                            <a href="{{ route('password.request') }}" class="text-xs text-blue-600 hover:text-blue-700">
-                                Lupa password?
-                            </a>
-                        @endif
                     </div>
                     <div class="relative">
                         <input id="password" type="password" name="password"

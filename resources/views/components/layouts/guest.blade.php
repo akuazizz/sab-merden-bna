@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? 'SAB Merden' }} — Sistem Pengelolaan Air Bersih</title>
+    <link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -18,13 +19,7 @@
         <div class="max-w-7xl mx-auto px-6 sm:px-8 h-16 flex items-center justify-between">
             {{-- Logo --}}
             <a href="{{ url('/') }}" class="flex items-center gap-2">
-                <div class="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M12 2C8 7 4 10.5 4 14a8 8 0 0016 0c0-3.5-4-7-8-12z"/>
-                    </svg>
-                </div>
-                <span class="font-bold text-slate-800 text-base">SAB Merden</span>
+                <x-app-logo size="sm" :dark="false" />
             </a>
 
             {{-- Nav kanan --}}
@@ -49,13 +44,7 @@
         <div class="max-w-7xl mx-auto px-6 sm:px-8 py-12 grid grid-cols-1 sm:grid-cols-3 gap-8">
             <div>
                 <div class="flex items-center gap-3 mb-4">
-                    <div class="w-9 h-9 bg-blue-500 rounded-xl flex items-center justify-center">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M12 2C8 7 4 10.5 4 14a8 8 0 0016 0c0-3.5-4-7-8-12z"/>
-                        </svg>
-                    </div>
-                    <span class="font-bold text-lg text-white">SAB Merden</span>
+                    <x-app-logo size="sm" :dark="true" />
                 </div>
                 <p class="text-slate-400 text-sm leading-relaxed max-w-xs">
                     Sistem Pengelolaan Air Bersih Desa Merden yang akurat, modern, dan terintegrasi.

@@ -105,6 +105,15 @@
                                             </button>
                                         </form>
                                     @endif
+                                    <form method="POST"
+                                          action="{{ route('admin.pelanggan.destroy', $p->id) }}"
+                                          onsubmit="return confirm('Hapus pelanggan {{ $p->nama }}? Data yang dihapus tidak dapat dikembalikan.')">
+                                        @csrf @method('DELETE')
+                                        <button type="submit"
+                                                class="text-xs text-red-600 hover:text-red-700 font-medium px-2 py-1 rounded hover:bg-red-50 transition">
+                                            Hapus
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>

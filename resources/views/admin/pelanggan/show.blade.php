@@ -25,6 +25,12 @@
                     <button type="submit" class="btn-success text-xs px-4 py-2">Aktifkan</button>
                 </form>
             @endif
+            <form method="POST"
+                  action="{{ route('admin.pelanggan.destroy', $pelanggan->id) }}"
+                  onsubmit="return confirm('Hapus permanen pelanggan {{ $pelanggan->nama }}? Tindakan ini tidak dapat dibatalkan.')">
+                @csrf @method('DELETE')
+                <button type="submit" class="btn-danger text-xs px-4 py-2">Hapus</button>
+            </form>
         </div>
     </div>
 

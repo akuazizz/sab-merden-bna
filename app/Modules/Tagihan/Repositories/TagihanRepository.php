@@ -93,11 +93,19 @@ class TagihanRepository extends BaseRepository
     }
 
     /**
-     * Nomor urut dalam satu periode untuk generate nomor_tagihan.
+     * Ambil nomor urut tertinggi dalam satu periode (termasuk soft-deleted)
+     * untuk generate nomor_tagihan yang tidak pernah duplicate.
      */
     public function countByPeriodeForNomor(string $periode): int
     {
-        return $this->query()->where('periode', $periode)->count();
+        $prefix = 'INV-' . str_replace('-', '', $periode) . '-';
+
+        $max = Tagihan::withTrashed()
+            ->where('nomor_tagihan', 'like', "{$prefix}%")
+            ->selectRaw('MAX(CAST(SUBSTRING(nomor_tagihan, ?) AS UNSIGNED)) as max_urutan', [strlen($prefix) + 1])
+            ->value('max_urutan');
+
+        return (int) $max;
     }
 
     public function getByPelangganDanTahun(int $pelangganId, int $tahun): Collection

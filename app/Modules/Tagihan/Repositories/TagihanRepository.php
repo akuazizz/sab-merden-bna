@@ -93,14 +93,15 @@ class TagihanRepository extends BaseRepository
     }
 
     /**
-     * Ambil nomor urut tertinggi dalam satu periode (termasuk soft-deleted)
+     * Ambil nomor urut tertinggi dalam satu periode
      * untuk generate nomor_tagihan yang tidak pernah duplicate.
+     * Menggunakan DB::table agar tidak tergantung pada SoftDeletes.
      */
     public function countByPeriodeForNomor(string $periode): int
     {
         $prefix = 'INV-' . str_replace('-', '', $periode) . '-';
 
-        $max = Tagihan::withTrashed()
+        $max = \Illuminate\Support\Facades\DB::table('tagihan')
             ->where('nomor_tagihan', 'like', "{$prefix}%")
             ->selectRaw('MAX(CAST(SUBSTRING(nomor_tagihan, ?) AS UNSIGNED)) as max_urutan', [strlen($prefix) + 1])
             ->value('max_urutan');

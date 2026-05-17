@@ -168,7 +168,28 @@ class PelangganService
                 throw new PelangganMasihMemilikiTagihanException();
             }
 
-            return $this->repo->delete($pelanggan->id);
+            // Cascade: hapus semua data relasi sebelum force-delete pelanggan
+            // 1. Hapus transaksi pembayaran (via tagihan)
+            $tagihanIds = \App\Modules\Tagihan\Models\Tagihan::where('pelanggan_id', $pelanggan->id)
+                ->pluck('id');
+
+            \App\Modules\Payment\Models\Transaksi::whereIn('tagihan_id', $tagihanIds)
+                ->forceDelete();
+
+            // 2. Hapus tagihan
+            \App\Modules\Tagihan\Models\Tagihan::where('pelanggan_id', $pelanggan->id)
+                ->forceDelete();
+
+            // 3. Hapus pembacaan meteran
+            \App\Modules\Meteran\Models\MeteranReading::where('pelanggan_id', $pelanggan->id)
+                ->delete();
+
+            // 4. Force-delete pelanggan (hapus permanen beserta akun user-nya)
+            if ($pelanggan->user_id) {
+                \App\Models\User::find($pelanggan->user_id)?->delete();
+            }
+
+            return $pelanggan->forceDelete();
         });
     }
 

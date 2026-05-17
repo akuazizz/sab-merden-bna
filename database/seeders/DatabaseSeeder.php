@@ -43,7 +43,7 @@ class DatabaseSeeder extends Seeder
             [
                 'user_id'        => $pelangganUser->id,
                 'nama'           => 'Test User',
-                'nik'            => null,
+                'id_pelanggan'   => null,
                 'alamat'         => 'Jl. Merden No. 1',
                 'dusun'          => 'Krajan',
                 'rt'             => '001',

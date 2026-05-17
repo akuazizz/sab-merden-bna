@@ -16,7 +16,7 @@ class StorePelangganRequest extends FormRequest
     {
         return [
             'nama'          => ['required', 'string', 'max:100'],
-            'nik'           => ['nullable', 'string', 'digits:16', 'unique:pelanggan,nik'],
+            'id_pelanggan'  => ['nullable', 'string', 'max:20', 'unique:pelanggan,id_pelanggan'],
             'alamat'        => ['required', 'string', 'max:500'],
             'rt'            => ['nullable', 'string', 'max:5'],
             'rw'            => ['nullable', 'string', 'max:5'],
@@ -34,8 +34,8 @@ class StorePelangganRequest extends FormRequest
     {
         return [
             'nama.required'          => 'Nama pelanggan wajib diisi.',
-            'nik.digits'             => 'NIK harus terdiri dari 16 digit angka.',
-            'nik.unique'             => 'NIK sudah terdaftar untuk pelanggan lain.',
+            'id_pelanggan.max'       => 'ID Pelanggan maksimal 20 karakter.',
+            'id_pelanggan.unique'    => 'ID Pelanggan sudah digunakan pelanggan lain.',
             'alamat.required'        => 'Alamat wajib diisi.',
             'tanggal_daftar.before_or_equal' => 'Tanggal daftar tidak boleh di masa depan.',
             'email.required'         => 'Email akun wajib diisi.',
@@ -51,9 +51,9 @@ class StorePelangganRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        // Normalisasi NIK — hapus spasi
-        if ($this->nik) {
-            $this->merge(['nik' => preg_replace('/\s+/', '', $this->nik)]);
+        // Normalisasi ID Pelanggan — hapus spasi
+        if ($this->id_pelanggan) {
+            $this->merge(['id_pelanggan' => preg_replace('/\s+/', '', $this->id_pelanggan)]);
         }
     }
 }

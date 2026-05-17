@@ -64,7 +64,7 @@ class PelangganRepository extends BaseRepository
             ->where(function ($q) use ($keyword) {
                 $q->where('nama', 'like', "%{$keyword}%")
                   ->orWhere('nomor_pelanggan', 'like', "%{$keyword}%")
-                  ->orWhere('nik', 'like', "%{$keyword}%")
+                  ->orWhere('id_pelanggan', 'like', "%{$keyword}%")
                   ->orWhere('telepon', 'like', "%{$keyword}%");
             })
             ->paginate($perPage);

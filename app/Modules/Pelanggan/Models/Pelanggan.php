@@ -21,7 +21,7 @@ class Pelanggan extends Model
         'user_id',
         'nomor_pelanggan',
         'nama',
-        'nik',
+        'id_pelanggan',
         'alamat',
         'rt',
         'rw',

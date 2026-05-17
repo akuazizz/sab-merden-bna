@@ -79,7 +79,7 @@
                 </div>
                 @foreach([
                     ['label' => 'Nomor Pelanggan', 'value' => $pelanggan->nomor_pelanggan, 'mono' => true],
-                    ['label' => 'NIK', 'value' => $pelanggan->nik ?? '-', 'mono' => true],
+                    ['label' => 'ID Pelanggan', 'value' => $pelanggan->id_pelanggan ?? '-', 'mono' => true],
                     ['label' => 'Email Login', 'value' => $pelanggan->user?->email ?? '— belum ada akun —', 'mono' => false],
                     ['label' => 'Alamat', 'value' => $pelanggan->alamat, 'mono' => false],
                     ['label' => 'Dusun', 'value' => $pelanggan->dusun ?? '-', 'mono' => false],

@@ -19,9 +19,9 @@ class UpdatePelangganRequest extends FormRequest
 
         return [
             'nama'    => ['required', 'string', 'max:100'],
-            'nik'     => [
-                'nullable', 'string', 'digits:16',
-                Rule::unique('pelanggan', 'nik')
+            'id_pelanggan' => [
+                'nullable', 'string', 'max:20',
+                Rule::unique('pelanggan', 'id_pelanggan')
                     ->ignore($pelangganId)
                     ->whereNull('deleted_at'),
             ],
@@ -40,16 +40,16 @@ class UpdatePelangganRequest extends FormRequest
     {
         return [
             'nama.required'   => 'Nama pelanggan wajib diisi.',
-            'nik.digits'      => 'NIK harus terdiri dari 16 digit angka.',
-            'nik.unique'      => 'NIK sudah terdaftar untuk pelanggan lain.',
+            'id_pelanggan.max'    => 'ID Pelanggan maksimal 20 karakter.',
+            'id_pelanggan.unique' => 'ID Pelanggan sudah digunakan pelanggan lain.',
             'alamat.required' => 'Alamat wajib diisi.',
         ];
     }
 
     protected function prepareForValidation(): void
     {
-        if ($this->nik) {
-            $this->merge(['nik' => preg_replace('/\s+/', '', $this->nik)]);
+        if ($this->id_pelanggan) {
+            $this->merge(['id_pelanggan' => preg_replace('/\s+/', '', $this->id_pelanggan)]);
         }
     }
 }

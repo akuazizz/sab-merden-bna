@@ -57,8 +57,8 @@
                                     </div>
                                     <div>
                                         <p class="font-medium text-slate-800 text-sm">{{ $p->nama }}</p>
-                                        @if($p->nik)
-                                            <p class="text-xs text-slate-400 font-mono">NIK: {{ $p->nik }}</p>
+                                        @if($p->id_pelanggan)
+                                            <p class="text-xs text-slate-400 font-mono">ID: {{ $p->id_pelanggan }}</p>
                                         @endif
                                     </div>
                                 </div>

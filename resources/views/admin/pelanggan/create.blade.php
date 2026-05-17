@@ -153,13 +153,13 @@
             </form>
         </div>
     </div>
-</x-layouts.admin>
 
-<x-slot name="scripts">
-    <script>
-        function togglePwd(id) {
-            const input = document.getElementById(id);
-            input.type = input.type === 'password' ? 'text' : 'password';
-        }
-    </script>
-</x-slot>
+    <x-slot name="scripts">
+        <script>
+            function togglePwd(id) {
+                const input = document.getElementById(id);
+                input.type = input.type === 'password' ? 'text' : 'password';
+            }
+        </script>
+    </x-slot>
+</x-layouts.admin>

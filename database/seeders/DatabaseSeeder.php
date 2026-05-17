@@ -17,10 +17,10 @@ class DatabaseSeeder extends Seeder
 
         // ── 2. Buat akun Admin ─────────────────────────────────────────
         $admin = User::firstOrCreate(
-            ['email' => 'admin@sab.test'],
+            ['email' => 'admin@sab.go.id'],
             [
                 'name'      => 'Admin',
-                'password'  => Hash::make('password'),
+                'password'  => Hash::make('password123'),
                 'is_active' => true,
             ]
         );
@@ -63,7 +63,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->command->info('✅ Seeding selesai!');
-        $this->command->line('   Admin    : admin@sab.test / password');
+        $this->command->line('   Admin    : admin@sab.go.id / password123');
         $this->command->line('   Pelanggan: pelanggan@sab.test / password');
     }
 }

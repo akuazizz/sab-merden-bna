@@ -33,6 +33,23 @@ class PelangganRepository extends BaseRepository
             ->count();
     }
 
+    /**
+     * Ambil nomor urut tertinggi dari nomor_pelanggan untuk tahun tertentu.
+     * Menggunakan withTrashed() agar soft-deleted records ikut dihitung,
+     * sehingga tidak terjadi duplicate entry.
+     */
+    public function maxUrutanByTahun(int $tahun): int
+    {
+        $prefix = "SAB-{$tahun}";
+
+        $max = Pelanggan::withTrashed()
+            ->where('nomor_pelanggan', 'like', "{$prefix}%")
+            ->selectRaw('MAX(CAST(SUBSTRING(nomor_pelanggan, ?) AS UNSIGNED)) as max_urutan', [strlen($prefix) + 1])
+            ->value('max_urutan');
+
+        return (int) $max;
+    }
+
     public function countByStatus(string $status): int
     {
         return $this->query()->where('status', $status)->count();

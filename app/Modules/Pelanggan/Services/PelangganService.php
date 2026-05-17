@@ -181,7 +181,9 @@ class PelangganService
     public function generateNomorPelanggan(): string
     {
         $tahun  = now()->year;
-        $urutan = $this->repo->countByTahun($tahun) + 1;
+        // Ambil nomor urut tertinggi yang pernah ada (termasuk soft-deleted)
+        // agar tidak muncul duplicate entry meski ada pelanggan yang dihapus
+        $urutan = $this->repo->maxUrutanByTahun($tahun) + 1;
 
         return sprintf('SAB-%d%03d', $tahun, $urutan);
     }

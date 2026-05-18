@@ -32,7 +32,7 @@
                     <a href="{{ route('portal.tagihan.index') }}"
                        class="text-sm px-3 py-1.5 rounded-lg transition
                               {{ request()->routeIs('portal.tagihan.*') ? 'bg-blue-50 text-blue-700 font-medium' : 'text-slate-500 hover:text-slate-700' }}">
-                        Tagihan
+                        Tagihan 1
                     </a>
                     <a href="{{ route('portal.riwayat.index') }}"
                        class="text-sm px-3 py-1.5 rounded-lg transition
